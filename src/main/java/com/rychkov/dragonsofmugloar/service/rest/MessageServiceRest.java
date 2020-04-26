@@ -1,6 +1,8 @@
 package com.rychkov.dragonsofmugloar.service.rest;
 
 import com.rychkov.dragonsofmugloar.entity.Game;
+import com.rychkov.dragonsofmugloar.entity.Message;
+import com.rychkov.dragonsofmugloar.entity.MessageResult;
 import com.rychkov.dragonsofmugloar.entity.Messages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class MessageServiceRest {
     private final static String GET_MESSAGES_ENDPOINT = "https://dragonsofmugloar.com/api/v2/%s/messages";
+    private final static String SOLVE_MESSAGE_ENDPOINT = "https://dragonsofmugloar.com/api/v2/%s/solve/%s";
     private RestTemplate restTemplate;
     private HttpEntity httpEntity;
 
@@ -32,5 +35,15 @@ public class MessageServiceRest {
         ResponseEntity<Messages> messagesResponseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, Messages.class);
 
         return messagesResponseEntity.getBody();
+    }
+
+    @Retryable
+    public MessageResult solveMessage(Game game, Message message){
+        String url = String.format(SOLVE_MESSAGE_ENDPOINT, game.getGameId(), message.getAdId());
+
+        log.info("solving message ={} for game ={}", message.getAdId(), game.getGameId());
+        ResponseEntity<MessageResult> messageResultResponseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, MessageResult.class);
+
+        return messageResultResponseEntity.getBody();
     }
 }

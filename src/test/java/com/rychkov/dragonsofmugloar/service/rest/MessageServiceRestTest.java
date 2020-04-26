@@ -3,6 +3,8 @@ package com.rychkov.dragonsofmugloar.service.rest;
 
 import com.rychkov.dragonsofmugloar.TestRoot;
 import com.rychkov.dragonsofmugloar.entity.Game;
+import com.rychkov.dragonsofmugloar.entity.Message;
+import com.rychkov.dragonsofmugloar.entity.MessageResult;
 import com.rychkov.dragonsofmugloar.entity.Messages;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 public class MessageServiceRestTest extends TestRoot {
     private final static String GAME_ID = "gameId";
+    private static final String MESSAGE_ID = "messageId";
 
     @MockBean
     private RestTemplate restTemplate;
@@ -53,5 +56,28 @@ public class MessageServiceRestTest extends TestRoot {
 
         verify(restTemplate, times(1))
                 .exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Messages.class));
+    }
+
+    @Test
+    public void solveMessageReturnsValidMessageResult(){
+        Game game = new Game();
+        game.setGameId(GAME_ID);
+
+        Message message = new Message();
+        message.setAdId(MESSAGE_ID);
+
+        MessageResult messageResult = new MessageResult();
+
+        ResponseEntity<MessageResult> expectedResponseEntity = new ResponseEntity<>(messageResult, HttpStatus.OK);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(MessageResult.class)))
+                .thenReturn(expectedResponseEntity);
+
+        MessageResult actualMessageResult = messageServiceRest.solveMessage(game, message);
+
+        assertThat(actualMessageResult, is(equalTo(messageResult)));
+
+        verify(restTemplate, times(1))
+                .exchange(anyString(), eq(HttpMethod.POST  ), any(HttpEntity.class), eq(MessageResult.class));
     }
 }

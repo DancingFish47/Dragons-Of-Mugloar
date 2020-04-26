@@ -11,15 +11,19 @@ import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 public class DragonsofmugloarApplication {
-//    private GameRunnerService gameRunnerService;
-//
-//    @Autowired
-//    public DragonsofmugloarApplication(GameRunnerService gameRunnerService){
-//        this.gameRunnerService = gameRunnerService;
-//    }
+    private GameRunnerService gameRunnerService;
+
+    @Autowired
+    public DragonsofmugloarApplication(GameRunnerService gameRunnerService){
+        this.gameRunnerService = gameRunnerService;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(DragonsofmugloarApplication.class, args);
     }
 
+    @PostConstruct
+    public void go(){
+        gameRunnerService.runGames();
+    }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 public class ReputationServiceRest {
-    private final static String GET_REPUTATION_ENDPOINT = "https://dragonsofmugloar.com/api/v2/$s/investigate/reputation";
+    private final static String GET_REPUTATION_ENDPOINT = "https://dragonsofmugloar.com/api/v2/%s/investigate/reputation";
     private RestTemplate restTemplate;
     private HttpEntity httpEntity;
 
@@ -26,9 +26,9 @@ public class ReputationServiceRest {
 
     @Retryable
     public Reputation getReputation(Game game){
-        String url = String.format("https://dragonsofmugloar.com/api/v2/$s/investigate/reputation", game.getGameId());
+        String url = String.format(GET_REPUTATION_ENDPOINT, game.getGameId());
 
-        log.info("getting reputation for game ={}", game.getGameId());
+        log.info("getting reputation for game ={} turn ={}", game.getGameId(), game.getTurn());
         ResponseEntity<Reputation> reputationResponseEntity = restTemplate.exchange(url, HttpMethod.POST, httpEntity, Reputation.class);
 
         return reputationResponseEntity.getBody();
