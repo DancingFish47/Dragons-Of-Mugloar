@@ -12,4 +12,5 @@ public class Message {
     private String message;
     private String reward;
     private int expiresIn;
+    private String probability;
 }

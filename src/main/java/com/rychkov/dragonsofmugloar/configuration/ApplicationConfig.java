@@ -14,6 +14,7 @@ public class ApplicationConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
         return restTemplateBuilder
+                .errorHandler(new RestTemplateResponseErrorHandler())
                 .build();
     }
 
